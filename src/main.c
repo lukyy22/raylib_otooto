@@ -20,6 +20,8 @@ int main(void)
     const int screenHeight = 240;
 
     InitWindow(screenWidth, screenHeight, "Oto Oto");
+    Image icon = LoadImage("../resources/oto.png");
+    SetWindowIcon(icon);
     SetTargetFPS(60);               // Set our game to run at 60 frames-per-second
     SetExitKey(0);
 

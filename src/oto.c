@@ -5,6 +5,7 @@ Texture2D oto; // Oto texture
 int screenWidth; // Width of screen
 int screenHeight; // Height of screen
 Vector2 otoPosition; // Position of Oto
+Rectangle sprite;
 
 int horizontalMovement = 0; // Left and right movement integer
 
@@ -12,7 +13,11 @@ int keyCountR = 0; // Right key counter for sprinting
 int keyCountL = 0; // Left key counter for sprinting
 
 float sprintTimer = 0.0; // Timer for sprint double tap
+float stopSprintingTimer = 0.0; // Timer to stop sprinting when there is no movement
 bool isSprinting = false; // Bool to check if sprinting
+
+void Movement();
+
 
 void OtoInit() // Initilize Oto 
 {
@@ -20,6 +25,11 @@ void OtoInit() // Initilize Oto
     screenWidth = GetScreenWidth();
     screenHeight = GetScreenHeight();
     otoPosition = (Vector2){(screenWidth / 2.0f) - (oto.width / 2.0f), (screenHeight / 2.0f)};
+    sprite.height = oto.height;
+    sprite.width = oto.width;
+    //sprite.x = otoPosition.x;
+    //sprite.y = otoPosition.y;
+    
 }
 
 void UnloadOto() // Unload texture
@@ -28,6 +38,18 @@ void UnloadOto() // Unload texture
 }
 
 void OtoUpdate() // Movement
+{
+    // Movement
+    Movement();
+}
+
+void OtoDraw()
+{
+    DrawTextureRec(oto, sprite, otoPosition, RAYWHITE);
+    
+}
+
+void Movement()
 {
     // Set movement to 0 at start
     horizontalMovement = 0;
@@ -54,7 +76,7 @@ void OtoUpdate() // Movement
         // If the keyCounter is at 1, start the timer
         if (keyCountR == 1)
         {
-            sprintTimer = 1.0;
+            sprintTimer = 1.5;
         }
         
         // If the keyCounter is at 2, start sprinting
@@ -75,7 +97,7 @@ void OtoUpdate() // Movement
         // If the keyCounter is at 1, start the timer
         if (keyCountL == 1)
         {
-            sprintTimer = 1.0;
+            sprintTimer = 1.5;
         }
         
         // If the keyCounter is at 2, start sprinting
@@ -95,6 +117,7 @@ void OtoUpdate() // Movement
         keyCountR = 0;
         keyCountL = 0;
     }
+    
     // Stop sprinting if either no button is pressed or both left and right buttons are pressed
     if (horizontalMovement == 0)
     {
@@ -108,11 +131,15 @@ void OtoUpdate() // Movement
     }else{
         otoPosition.x += horizontalMovement;  
     }   
-    
-}
 
-void OtoDraw()
-{
-    DrawTexture(oto, otoPosition.x , otoPosition.y, RAYWHITE);
-    
+    // Rotate sprite with movement
+    switch (horizontalMovement)
+    {
+    case 1:
+        sprite.width = oto.width;
+        break;
+    case -1:
+        sprite.width = -oto.width;
+        break;
+    }
 }
